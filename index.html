@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝙳𝚊𝚒 𝙱𝚑𝚊𝚒 𝙺𝚑𝚊𝚍𝚢𝚊 𝚂𝚝𝚘𝚛𝚎𝚜</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Custom Styles */
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #f97316;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .video-slider {
+            position: relative;
+            overflow: hidden;
+            height: 700px;
+        }
+        .video-slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-slide.active {
+            display: block;
+        }
+        .slider-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .slider-nav div {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .slider-nav div.active {
+            background: #f97316;
+        }
+        .nav-link {
+            position: relative;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #f97316;
+        }
+        .search-container {
+            position: relative;
+            width: 200px;
+            height: 40px;
+        }
+        .search-input {
+            width: 100%;
+            height: 100%;
+            padding: 0 40px 0 10px;
+            border: 2px solid #38b2ac;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            border-color: #f97316;
+            background: white;
+            color: #2d3748;
+        }
+        .search-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .search-input:focus + .search-button {
+            color: #f97316;
+        }
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            color: white;
+            font-size: 24px;
+            transition: transform 0.3s ease;
+        }
+        .cart-icon:hover {
+            transform: scale(1.2);
+            color: #f97316;
+        }
+        .glass-button {
+            display: inline-block;
+            padding: 12px 24px;
+            border: 0;
+            text-decoration: none;
+            border-radius: 15px;
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(30px);
+            color: white;
+            font-size: 14px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .glass-button:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+        .add-to-cart-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #f97316;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .add-to-cart-btn:hover {
+            background: #ed8936;
+            transform: scale(1.05);
+        }
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover img {
+            transform: scale(1.1);
+        }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+        }
+        .mobile-menu {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .desktop-menu {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+            .hamburger {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 30px;
+                height: 20px;
+                cursor: pointer;
+            }
+            .hamburger span {
+                background: white;
+                height: 3px;
+                border-radius: 2px;
+                transition: all 0.3s ease;
+            }
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -7px);
+            }
+            .mobile-nav {
+                display: none;
+                flex-direction: column;
+                background: #2d3748;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 200px;
+                padding: 20px;
+            }
+            .mobile-nav.active {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-teal-600 p-4 sticky top-0 z-20 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center flex-wrap">
+            <h1 class="text-white text-2xl font-bold">𝙳𝚊𝚒 𝙱𝚑𝚊𝚒</h1>
+            <div class="search-container">
+                <input 
+                    type="search" 
+                    id="search-input" 
+                    class="search-input" 
+                    placeholder="Search products..." 
+                    aria-label="Search products"
+                >
+                <button class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="flex items-center space-x-4">
+                <!-- Desktop Menu -->
+                <div class="desktop-menu flex items-center space-x-4">
+                    <a href="#home" class="nav-link">Home</a>
+                    <a href="#products" class="nav-link">Products</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                    <!-- Search Bar -->
+                   
+                    <!-- Cart Icon -->
+                    <div class="relative">
+                        <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()"></i>
+                        <span id="cart-count" class="cart-count">0</span>
+                    </div>
+                </div>
+                <!-- Mobile Menu -->
+                <div class="mobile-menu">
+                    <div class="hamburger" onclick="toggleMobileMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="mobile-nav" id="mobile-nav">
+                        <a href="#home" class="nav-link">Home</a>
+                        <a href="#products" class="nav-link">Products</a>
+                        <a href="#contact" class="nav-link">Contact</a>
+                        <div class="search-container mt-2">
+                            <input 
+                                type="search" 
+                                id="mobile-search-input" 
+                                class="search-input" 
+                                placeholder="Search products..." 
+                                aria-label="Search products"
+                            >
+                            <button class="search-button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="relative mt-2">
+                            <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()"></i>
+                            <span id="mobile-cart-count" class="cart-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="video-slider">
+        <div class="video-overlay"></div>
+        <video class="video-slide active" autoplay muted loop>
+            <source src="rumpum.mp4" type="video/mp4">
+        </video>
+        <video class="video-slide" autoplay muted loop>
+            <source src="gourment.mp4" type="video/mp4">
+        </video>
+        <video class="video-slide" autoplay muted loop>
+            <source src="kesar.mp4" type="video/mp4">
+        </video>
+        <div class="slider-nav">
+            <div class="active"></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white z-10">
+            <h2 class="text-5xl font-bold mb-4">Welcome to 𝙳𝚊𝚒 𝙱𝚑𝚊𝚒 𝙺𝚑𝚊𝚍𝚢𝚊 𝚂𝚝𝚘𝚛𝚎𝚜</h2>
+            <p class="text-xl mb-6">Discover a wide range of products at unbeatable prices!</p>
+            <a href="#products" class="glass-button text-lg px-8 py-3">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-12 bg-gray-100">
+        <div class="container mx-auto">
+            <!-- Chocolates -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">Chocolates</h2>
+            <div id="chocolates-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+
+            <!-- Kurkure & Snacks -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">Kurkure & Snacks</h2>
+            <div id="kurkure_snacks-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+
+            <!-- Biscuits -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">Biscuits</h2>
+            <div id="biscuits-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+
+            <!-- Tea -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">Tea</h2>
+            <div id="tea-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+
+            <!-- Juices & Drinks -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">Juices & Drinks</h2>
+            <div id="juices-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+
+            <!-- Soap & Detergent -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">Soap & Detergent</h2>
+            <div id="soap_detergent-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+
+            <!-- Oils -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">Oils</h2>
+            <div id="oils-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+
+            <!-- Tobacco -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">Tobacco</h2>
+            <div id="tobacco-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+
+            <!-- Noodles -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">Noodles</h2>
+            <div id="noodles-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+
+            <!-- More Items -->
+            <h2 class="text-4xl font-bold text-center mb-8 text-teal-800">More Items</h2>
+            <div id="more_items-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"></div>
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-96 bg-white shadow-2xl p-6 transform translate-x-full transition-transform duration-300 z-30">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-teal-800">Your Cart</h2>
+            <button onclick="toggleCart()" class="text-orange-600 hover:text-orange-800"><i class="fas fa-times text-2xl"></i></button>
+        </div>
+        <div id="cart-items" class="space-y-6"></div>
+        <div class="mt-6">
+            <p class="font-bold text-teal-800 text-lg">Total: $<span id="cart-total">0</span></p>
+            <button class="glass-button w-full py-3 mt-4 text-lg">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-teal-900 text-white py-12">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-2xl font-bold mb-4">About Us</h3>
+                <p class="text-gray-300">General Store offers a wide range of daily essentials at affordable prices.</p>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#home" class="text-gray-300 hover:text-orange-200">Home</a></li>
+                    <li><a href="#products" class="text-gray-300 hover:text-orange-200">Products</a></li>
+                    <li><a href="#contact" class="text-gray-300 hover:text-orange-200">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-4">Follow Us</h3>
+                <div class="flex space-x-4 mb-4">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="bg-teal-950 py-4 mt-8">
+            <div class="container mx-auto text-center">
+                <p class="text-gray-300">© 2025 𝙳𝚊𝚒 𝙱𝚑𝚊𝚒 𝙺𝚑𝚊𝚍𝚢𝚊 𝚂𝚝𝚘𝚛𝚎𝚜. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const products = [
+            { id: 1, name: "IMLI BOMB", price: 1, category: "chocolates", image: "images/imli.jpg" },
+            { id: 2, name: "Kesar Malai Lallipop", price: 5, category: "chocolates", image: "kesar.jpg" },
+            { id: 3, name: "RUMPUM", price: 10, category: "kurkure_snacks", image: "images/rumpum.png" },
+            { id: 5, name: "Merry Merry", price: 10, category: "kurkure_snacks", image: "merry.jpg" },
+            { id: 6, name: "Poteato", price: 50, category: "kurkure_snacks", image: "poteato.jpg" },
+            { id: 7, name: "Natural Juices", price: 3.49, category: "juices", image: "merry.png" },
+            { id: 8, name: "Monsoon Dew", price: 0, category: "juices", image: "images/monsoon_dew.jpg" },
+            { id: 9, name: "Wai Wai Quick Pyro Duck 100g*20Pcs", price: 652.48, category: "noodles", image: "images/waiwai_duck.jpg" },
+            { id: 10, name: "Wai Wai Quick Ch Pizza 50g*30Pcs", price: 351, category: "noodles", image: "images/waiwai_pizza.jpg" },
+            { id: 11, name: "Wai Wai Quick Ms Curry 50g*30Pcs", price: 356, category: "noodles", image: "images/waiwai_curry.jpg" },
+            { id: 12, name: "Fizz LS 150g*24pcs Cream", price: 473.49, category: "soap_detergent", image: "images/fizz_cream_150.jpg" },
+            { id: 13, name: "Fizz LS 200g*24pcs Cream", price: 628.24, category: "soap_detergent", image: "images/fizz_cream_200.jpg" },
+            { id: 14, name: "Fizz LS 250g*24pcs Cream", price: 785.31, category: "soap_detergent", image: "images/fizz_cream_250.jpg" },
+            { id: 15, name: "Fizz LS 150g*24pcs Green", price: 473.49, category: "soap_detergent", image: "images/fizz_green_150.jpg" },
+            { id: 16, name: "Fizz LS 200g*24pcs Green", price: 628.24, category: "soap_detergent", image: "images/fizz_green_200.jpg" },
+            { id: 17, name: "Fizz LS 250g*24pcs Green", price: 785.31, category: "soap_detergent", image: "images/fizz_green_250.jpg" },
+            { id: 18, name: "Fizz LS 150g*30pcs Green/Cream", price: 591.87, category: "soap_detergent", image: "images/fizz_greencream_150.jpg" },
+            { id: 19, name: "Tika 100g*48pcs Green/Cream", price: 628.24, category: "soap_detergent", image: "images/tika_greencream.jpg" },
+            { id: 20, name: "Surf Per Kg Rate", price: 43.68, category: "soap_detergent", image: "images/surf_detergent.jpg" },
+            { id: 21, name: "Plastic Glass SST 230ml (80*60)", price: 1732.76, category: "more_items", image: "images/plastic_glass_sst.jpg" },
+            { id: 22, name: "Plastic Glass Flower 230ml (80*60)", price: 1732.76, category: "more_items", image: "images/plastic_glass_flower.jpg" },
+            { id: 23, name: "Plastic Glass Tea 130ml (80*85)", price: 1980.3, category: "more_items", image: "images/plastic_glass_tea.jpg" },
+            { id: 24, name: "Gukomor Gulcoose 12pcs*30Pkt", price: 1872, category: "more_items", image: "images/gukomor_glucose.jpg" },
+            { id: 25, name: "Amrit Pam Pouch", price: 1862.33, category: "oils", image: "images/amrit_pam_oil.jpg" },
+            { id: 26, name: "Amrit Sunflower Pouch", price: 2060.09, category: "oils", image: "images/amrit_sunflower_oil.jpg" },
+            { id: 27, name: "Amrit Tori Tel Pouch", price: 1849.25, category: "oils", image: "images/amrit_tori_oil.jpg" },
+            { id: 28, name: "Amrit Rani Tel Pouch", price: 2232.79, category: "oils", image: "images/amrit_rani_oil.jpg" },
+            { id: 29, name: "Mustard Oil Pouch, Sunaulo Kiran", price: 0, category: "oils", image: "images/mustard_oil.jpg" },
+            { id: 30, name: "Goodlife Fruit Goli 360pcs*4jar", price: 1502.8, category: "chocolates", image: "fruitgoli.jpg" },
+            { id: 31, name: "Butter Bite Biscuit", price: 815, category: "biscuits", image: "images/butter_bite_biscuit.jpg" },
+            { id: 32, name: "Center Full Strawberry", price: 2656.08, category: "chocolates", image: "centerfull.jpg" },
+            { id: 33, name: "Coffee Gum 150pcs*12jar", price: 2376.4, category: "chocolates", image: "coffeegum.jpg" },
+            { id: 34, name: "Naturals Mango 1ltr*6pcs", price: 555.87, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 35, name: "Choco Love Jar", price: 1768, category: "chocolates", image: "images/choco_love_jar.jpg" },
+            { id: 36, name: "Choco Love Pouch", price: 1385, category: "chocolates", image: "chocoluvp.jpg" },
+            { id: 37, name: "Chatak Candy", price: 780, category: "chocolates", image: "chatak.jpg" },
+            { id: 38, name: "Choco Loco Biscuits", price: 0, category: "biscuits", image: "images/choco_loco_biscuit.jpg" },
+            { id: 39, name: "Vita Milk Biscuits", price: 0, category: "biscuits", image: "vita.png" },
+            { id: 40, name: "Captain Filter", price: 6709.88, category: "tobacco", image: "images/captain_filter_pan.jpg" },
+            { id: 42, name: "Captain Mount Fresh", price: 8517.18, category: "tobacco", image: "images/captain_mount_pan.jpg" },
+            { id: 44, name: "Sahara Filter Panch", price: 4823.22, category: "tobacco", image: "images/sahara_filter_pan.jpg" },
+            { id: 46, name: "Nepal Gold Flake Premium Filter", price: 5337.56, category: "tobacco", image: "images/nepal_gold_vat.jpg" },
+            { id: 48, name: "Double Mint Candy 200pcs*6jar", price: 785, category: "chocolates", image: "images/double_mint_candy.jpg" },
+            { id: 49, name: "Double Break Jumbo Jar", price: 1352, category: "chocolates", image: "images/double_break_jar.jpg" },
+            { id: 50, name: "Ekta Soap Per Kg Rate", price: 99.05, category: "soap_detergent", image: "images/ekta_soap.jpg" },
+            { id: 51, name: "Eclairs Jumbo Jar", price: 1352, category: "chocolates", image: "images/eclairs_jar.jpg" },
+            { id: 52, name: "Imli Bomb Candy", price: 994.11, category: "chocolates", image: "images/imli_bomb_candy.jpg" },
+            { id: 53, name: "Imli Bomb Spicy Candy", price: 0, category: "chocolates", image: "images/imli_bomb_spicy.jpg" },
+            { id: 54, name: "Eya Eya Oh - Veg *45pcs VEG", price: 235.33, category: "noodles", image: "images/eya_eya_oh.jpg" },
+            { id: 55, name: "Fortuner Plus Torch", price: 147.26, category: "more_items", image: "images/fortuner_torch.jpg" },
+            { id: 56, name: "Fun Center Pineapple Cream Biscuits", price: 0, category: "biscuits", image: "funcenter.jpg" },
+            { id: 57, name: "Fun Center Milk Cream Biscuits", price: 400, category: "biscuits", image: "funcenter.jpg" },
+            { id: 58, name: "Fun Center Chocolate Cream Biscuits", price: 400, category: "biscuits", image: "funcenter.jpg" },
+            { id: 59, name: "Fun Center Orange Cream Biscuits", price: 0, category: "biscuits", image: "funcenter.jpg" },
+            { id: 60, name: "Fit Kid Biscuits 200pcs", price: 0, category: "biscuits", image: "images/fit_kid_biscuit.jpg" },
+            { id: 61, name: "Gutkha", price: 187.68, category: "tobacco", image: "images/gutkha.jpg" },
+            { id: 62, name: "Goodlife Ball Gam", price: 1014, category: "chocolates", image: "ballgum.jpg" },
+            { id: 63, name: "Goodlife Butter Cookies", price: 1144, category: "biscuits", image: "images/goodlife_butter_cookies.jpg" },
+            { id: 64, name: "Goodlife Butter Cookies Tiffin Pack 150pcs*1ctn", price: 0, category: "biscuits", image: "images/goodlife_tiffin_cookies.jpg" },
+            { id: 65, name: "Jhilke Soap 150grm*30pcs (1ctn--4.5kg) Rate in kg", price: 128.25, category: "soap_detergent", image: "images/jhilke_soap_150.jpg" },
+            { id: 66, name: "Jhilke Soap 200grm*24pcs (1ctn--4.8kg) Rate in kg", price: 128.25, category: "soap_detergent", image: "images/jhilke_soap_200.jpg" },
+            { id: 67, name: "Jhilke Soap 250grm*24pcs (1ctn--6kg) Rate in kg", price: 128.25, category: "soap_detergent", image: "images/jhilke_soap_250.jpg" },
+            { id: 68, name: "Laila Filter", price: 3700.68, category: "tobacco", image: "images/laila_filter_vat.jpg" },
+            { id: 70, name: "Mama Noodles 45 pcs Veg", price: 0, category: "noodles", image: "images/mama_noodles_veg.jpg" },
+            { id: 71, name: "PKD Tokla Box -Rs10 (2.88kg/Bag)", price: 483.6, category: "tea", image: "images/tokla_box_10.jpg" },
+            { id: 72, name: "PKD Tokla Box -Rs20 (7.2kg/Bag)", price: 442, category: "tea", image: "images/tokla_box_20.jpg" },
+            { id: 73, name: "PKD Tokla Box -100g (12kg/Bag)", price: 312, category: "tea", image: "images/tokla_box_100g.jpg" },
+            { id: 74, name: "PKD Tokla Box -200g (12kg/Bag)", price: 442, category: "tea", image: "images/tokla_box_200g.jpg" },
+            { id: 75, name: "PKD Tokla Box -500g (12kg/Bag)", price: 442, category: "tea", image: "images/tokla_box_500g.jpg" },
+            { id: 76, name: "PKD Tokla Pouch -Rs 5 (3.6kg/Bag)", price: 416, category: "tea", image: "images/tokla_pouch_5_3.6.jpg" },
+            { id: 77, name: "PKD Tokla Pouch -Rs 5 (4.8kg/Bag)", price: 409.76, category: "tea", image: "images/tokla_pouch_5_4.8.jpg" },
+            { id: 78, name: "PKD Tokla Pouch -Rs 5 (6kg/Bag)", price: 409.76, category: "tea", image: "images/tokla_pouch_5_6.jpg" },
+            { id: 79, name: "PKD Tokla Pouch -Rs 10 (9.6kg/Bag)", price: 301.03, category: "tea", image: "images/tokla_pouch_10_9.6.jpg" },
+            { id: 80, name: "PKD Tokla Pouch -Rs 10 (7.2kg/Bag)", price: 410.55, category: "tea", image: "images/tokla_pouch_10_7.2.jpg" },
+            { id: 81, name: "PKD Tokla Pouch -50g (12kg/Bag)", price: 419.12, category: "tea", image: "images/tokla_pouch_50g.jpg" },
+            { id: 82, name: "PKD Tokla Pouch -100g (12kg/Bag)", price: 312, category: "tea", image: "images/tokla_pouch_100g.jpg" },
+            { id: 83, name: "PKD Tokla Pouch -200g (12kg/Bag)", price: 419.12, category: "tea", image: "images/tokla_pouch_200g.jpg" },
+            { id: 84, name: "PKD Tokla Pouch -500g (12kg/Bag)", price: 419.12, category: "tea", image: "images/tokla_pouch_500g.jpg" },
+            { id: 85, name: "PKD Tokla Pouch -1000g (12kg/Bag)", price: 419.12, category: "tea", image: "images/tokla_pouch_1000g.jpg" },
+            { id: 86, name: "PKD Tokla Gold Box -100g (12kg/Bag)", price: 468, category: "tea", image: "images/tokla_gold_100g.jpg" },
+            { id: 87, name: "PKD Tokla Gold Box -200g (12kg/Bag)", price: 468, category: "tea", image: "images/tokla_gold_200g.jpg" },
+            { id: 88, name: "PKD Tokla Gold Box -500g (12kg/Bag)", price: 468, category: "tea", image: "images/tokla_gold_500g.jpg" },
+            { id: 89, name: "PKD Tokla Bag -100g (7.2kg/Bag)", price: 618.23, category: "tea", image: "images/tokla_bag_100g.jpg" },
+            { id: 90, name: "PKD Tokla Bag -200g (7.2kg/Bag)", price: 618.23, category: "tea", image: "images/tokla_bag_200g.jpg" },
+            { id: 91, name: "PKD Tokla Masala Box -200g (12kg/Bag)", price: 441.43, category: "tea", image: "images/tokla_masala_200g.jpg" },
+            { id: 92, name: "PKD Tokla Masala Box -500g (12kg/Bag)", price: 441.43, category: "tea", image: "images/tokla_masala_500g.jpg" },
+            { id: 93, name: "PKD Green Tea Box GM -37.50 (2.7kg/Bag)", price: 2333.22, category: "tea", image: "images/green_tea_37.5.jpg" },
+            { id: 94, name: "PKD Green Tea Box GM -100g (3kg/Bag)", price: 1475.22, category: "tea", image: "images/green_tea_100g.jpg" },
+            { id: 95, name: "PKD Soktim Pouch -50g (12kg/Bag)", price: 331.22, category: "tea", image: "images/soktim_pouch_50g.jpg" },
+            { id: 96, name: "PKD Soktim Pouch -100g (12kg/Bag)", price: 331.22, category: "tea", image: "images/soktim_pouch_100g.jpg" },
+            { id: 97, name: "PKD Soktim Pouch -200g (12kg/Bag)", price: 331.22, category: "tea", image: "images/soktim_pouch_200g.jpg" },
+            { id: 98, name: "PKD Soktim Pouch -500g (12kg/Bag)", price: 338, category: "tea", image: "images/soktim_pouch_500g.jpg" },
+            { id: 99, name: "PKD Soktim Pouch -1kg (12kg/Bag)", price: 338, category: "tea", image: "images/soktim_pouch_1kg.jpg" },
+            { id: 100, name: "PKD Tokla Bag 1kg (12kg/Jhola)", price: 398, category: "tea", image: "images/tokla_bag_1kg.jpg" },
+            { id: 101, name: "PKD Tokla Masala Pouch 50-100-200-500g (12kg/Jhola)", price: 417.87, category: "kurkure_snacks", image: "images/tokla_masala_pouch.jpg" },
+            { id: 102, name: "3Q Small Torch", price: 101.24, category: "more_items", image: "images/3q_torch.jpg" },
+            { id: 103, name: "Rumpum Biscuits", price: 654.19, category: "biscuits", image: "images/rumpum_biscuit.jpg" },
+            { id: 104, name: "Rintin 45pcs Veg", price: 239.92, category: "noodles", image: "images/rintin_veg.jpg" },
+            { id: 105, name: "Rakshak Torch", price: 234.67, category: "more_items", image: "images/rakshak_torch.jpg" },
+            { id: 106, name: "Ragnar Torch", price: 303.73, category: "more_items", image: "images/ragnar_torch.jpg" },
+            { id: 107, name: "Sudh Plus Gutkha (F) Per Kg Rate", price: 1241.76, category: "tobacco", image: "images/sudh_plus_gutkha.jpg" },
+            { id: 108, name: "Singham Torch", price: 101.24, category: "more_items", image: "images/singham_torch.jpg" },
+            { id: 112, name: "Treat Cream Roll Chocolate (40pcs *12 box)", price: 1606.8, category: "chocolates", image: "images/trit_chocolate_roll.jpg" },
+            { id: 113, name: "Treat Cream Roll Milk (40pcs *12 box)", price: 1606.8, category: "chocolates", image: "images/trit_milk_roll.jpg" },
+            { id: 114, name: "Treat Cream Roll Orange (40pcs *12 box)", price: 0, category: "chocolates", image: "images/trit_orange_roll.jpg" },
+            { id: 115, name: "Treat Cream Roll Strawberry (40pcs *12 box)", price: 0, category: "chocolates", image: "images/trit_strawberry_roll.jpg" },
+            { id: 116, name: "Wai Wai Mini *30pcs Veg", price: 202.55, category: "noodles", image: "images/waiwai_mini_veg.jpg" },
+            { id: 117, name: "Wai Wai Mini *30pcs Chicken", price: 0, category: "noodles", image: "images/waiwai_mini_chicken.jpg" },
+            { id: 118, name: "Wai Wai Noodles Korean (100g*16pcs)", price: 558.29, category: "noodles", image: "images/waiwai_korean_noodles.jpg" },
+            { id: 119, name: "Wai Wai Bhujiya (10g*100pkt) Rs 3", price: 222.63, category: "noodles", image: "images/waiwai_bhujiya_10g.jpg" },
+            { id: 120, name: "Wai Wai Bhujiya (15g*60pkt) Rs 5", price: 205.09, category: "noodles", image: "images/waiwai_bhujiya_15g.jpg" },
+            { id: 121, name: "Wai Wai Bhujiya (5g*400pkt) Rs 1", price: 310.8, category: "noodles", image: "images/waiwai_bhujiya_5g.jpg" },
+            { id: 122, name: "Wai Wai Quick Ms Curry 30pcs Veg", price: 445, category: "kurkure_snacks", image: "images/waiwai_quick_curry_veg.jpg" },
+            { id: 123, name: "Wai Wai Quick Ch Pizza 30pcs", price: 350, category: "noodles", image: "images/waiwai_quick_pizza.jpg" },
+            { id: 124, name: "Wai Wai Halal Veg", price: 457.08, category: "noodles", image: "images/waiwai_halal_veg.jpg" },
+            { id: 125, name: "Wai Wai Halal Chicken", price: 457.08, category: "noodles", image: "images/waiwai_halal_chicken.jpg" },
+            { id: 126, name: "Super Marie Biscuits", price: 0, category: "biscuits", image: "images/super_marie_biscuit.jpg" },
+            { id: 127, name: "Wai Wai Petpuja Akabare CH 60g*30pcs", price: 428.48, category: "noodles", image: "images/waiwai_petpuja_akabare.jpg" },
+            { id: 128, name: "Eclairs Candy 200pcs*6jar", price: 781.6, category: "chocolates", image: "eclairs.jpg" },
+            { id: 129, name: "Chatak Candy 200pcs*6jar", price: 781.6, category: "chocolates", image: "chatak.jpg" },
+            { id: 130, name: "Mint Mood Candy 200pcs*6jar", price: 781.6, category: "chocolates", image: "mint.jpg" },
+            { id: 131, name: "Kesar Malai Lollypop 48pcs*4pkt*1", price: 572, category: "chocolates", image: "pop.jpg" },
+            { id: 132, name: "Tic Tic Cheese Ball (Polly) 5gm*60Pkt", price: 214.57, category: "kurkure_snacks", image: "images/tic_tic_cheese_ball.jpg" },
+            { id: 133, name: "Tic Tic Spicy Potato Crackers 20gm*60Pkt", price: 724.02, category: "kurkure_snacks", image: "images/tic_tic_spicy_crackers.jpg" },
+            { id: 134, name: "Tic Tic Potato Crackers 10gm*30Pkt", price: 206.03, category: "kurkure_snacks", image: "images/tic_tic_crackers_10g.jpg" },
+            { id: 135, name: "Tic Tic Potato Crackers 20gm*30Pkt", price: 359.46, category: "kurkure_snacks", image: "images/tic_tic_crackers_20g.jpg" },
+            { id: 136, name: "Kwik's C.Ball Xtra Cheese 60gm*30Pkt FD", price: 1002.23, category: "kurkure_snacks", image: "images/kwiks_cheese_ball.jpg" },
+            { id: 137, name: "Kwik's Timure Stix 75g*30Pkt", price: 905.1, category: "kurkure_snacks", image: "images/kwiks_timure_stix.jpg" },
+            { id: 138, name: "Kwik's Kiks Magic Masala 7g*60Pkt", price: 226.2, category: "kurkure_snacks", image: "images/kwiks_magic_masala_7g.jpg" },
+            { id: 139, name: "Kwik's Kiks Magic Masala 12g*60Pkt", price: 387, category: "kurkure_snacks", image: "images/kwiks_magic_masala_12g.jpg" },
+            { id: 140, name: "Kwik's Potato Chips Hot & Spicy 50gm*30Pkt", price: 1026.9, category: "kurkure_snacks", image: "images/kwiks_hot_spicy_chips.jpg" },
+            { id: 141, name: "Kwik's Peanuts Bar 15gm*45Pkt*6Box", price: 1978.26, category: "chocolates", image: "images/kwiks_peanuts_bar_15g.jpg" },
+            { id: 142, name: "Kwik's Peanuts Bar 25gm*45Pkt*6Box", price: 2023.22, category: "chocolates", image: "images/kwiks_peanuts_bar_25g.jpg" },
+            { id: 143, name: "Kwik's Potato Chips Surcrmon 9g*72pkt", price: 500.98, category: "kurkure_snacks", image: "images/kwiks_surcrmon_chips_9g.jpg" },
+            { id: 144, name: "Kwik's Potato Chips Surcrmon 46g*30pkt", price: 1026.86, category: "kurkure_snacks", image: "images/kwiks_surcrmon_chips_46g.jpg" },
+            { id: 145, name: "Kwik's Masti Masala Stix 70g*30pkt", price: 797.83, category: "kurkure_snacks", image: "images/kwiks_masti_masala_stix.jpg" },
+            { id: 146, name: "Kwik's Gourmeet Crmon P.Chips 65g*30pkt", price: 1436.9, category: "kurkure_snacks", image: "images/kwiks_gourmeet_chips.jpg" },
+            { id: 147, name: "Fizzy Life Nimboo Pet Bottle 250ml*24pcs", price: 708.71, category: "juices", image: "images/fizzy_nimboo_bottle.jpg" },
+            { id: 148, name: "Rio Mango Juice Drink 180ml*30pkt", price: 413.98, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 149, name: "Kool Litchi Drink 125ml*72Pcs", price: 834.87, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 150, name: "Amrapali Ruchi Badam Drink 24pcs*180ML", price: 1312.03, category: "juices", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 151, name: "Speed Energy Drink 250ml*24can", price: 1460.18, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 152, name: "Relaible Chakra Badam Drink -180ml*24can", price: 1339.11, category: "juices", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 153, name: "Kimu Badam Drink-180ml*48can", price: 2503.34, category: "juices", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 154, name: "Kimu Badam Drink-180ml*24can", price: 1251.67, category: "juices", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 155, name: "Mount Fresh Badam Drink-180ml*48can", price: 2503.34, category: "juices", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=60" },
+            { id: 156, name: "Goodlife Litchi Drink (150*72)", price: 816.89, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 157, name: "Royal Blue Gold Reserve 750ml*12pcs", price: 950.52, category: "juices", image: "https://images.unsplash.com/photo-1592832128147-c1b66868e0d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 158, name: "Royal Blue Gold Reserve 375ml*24pcs", price: 475.26, category: "juices", image: "https://images.unsplash.com/photo-1592832128147-c1b66868e0d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 159, name: "Royal Blue Gold Reserve 180ml*48pcs", price: 237.63, category: "juices", image: "https://images.unsplash.com/photo-1592832128147-c1b66868e0d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 160, name: "Real Gold 5000 (500ml) Can -500ml*12pcs", price: 2381.85, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 161, name: "Leopard -650ml*12pcs", price: 2617.3, category: "juices", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzJbCUSTvxC71yeFzpCVvapijdW-RZtLWR6JbVlDNVg-icnlPpEQ5Jlv3eQi95mi7orGA&usqp=CAU.jpeg" },
+            { id: 162, name: "Leopard -8% -330ml*24pcs", price: 2782.64, category: "juices", image: "https://images.unsplash.com/photo-1592832128147-c1b66868e0d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 163, name: "Passion 8% Strong -330ml*24pcs", price: 2784.82, category: "juices", image: "https://images.unsplash.com/photo-1592832128147-c1b66868e0d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 164, name: "Nepal Ice Strong -650ml*12pcs", price: 3211.5, category: "juices", image: "https://images.unsplash.com/photo-1592832128147-c1b66868e0d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 165, name: "Nepal Ice Strong -330ml*24pcs", price: 3386.72, category: "juices", image: "https://images.unsplash.com/photo-1592832128147-c1b66868e0d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 166, name: "Mustang Premium Strong -330ml*24pcs", price: 3386.72, category: "juices", image: "https://images.unsplash.com/photo-1592832128147-c1b66868e0d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 167, name: "Reward (5000) -650ml*12pcs", price: 2609.88, category: "juices", image: "https://cgcorpglobal.com/templates/yootheme/cache/84/rewards-5000-846ae87c.jpeg" },
+            { id: 168, name: "Ambition Lemon -300ml", price: 876, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 169, name: "Ambition Black -300ml", price: 988, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 170, name: "Ambition Green -300ml", price: 1194, category: "juices", image: "green.jpg" },
+            { id: 171, name: "Ambition Russian Flavour 300ml", price: 1229, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 172, name: "Ambition 17 Double Strong 300ml", price: 1238, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 173, name: "Super Granny 300ml", price: 997, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 174, name: "Super Granny Pineapple Flavour 300ml", price: 1090, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 175, name: "Super Granny Jhakas 300ml", price: 885, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 176, name: "Champian Super Premium 300ml", price: 1078, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 177, name: "Granny Litchi 300ml", price: 783, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 178, name: "Granny Kela 300ml", price: 885, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 179, name: "Rio Alphonso Juice 200ml", price: 443, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 180, name: "Right -250ml*16pcs", price: 480.59, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 181, name: "Right -1L*6pcs", price: 464.56, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 182, name: "Right -2250ml*6pcs", price: 1136.43, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 183, name: "Monsoon Dew 250ml*16pcs", price: 515.85, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 184, name: "Monsoon Dew 600ml*12pcs", price: 619.98, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 185, name: "Monsoon Dew 2250ml*6pcs", price: 991.38, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 186, name: "Monsoon Dew 1ltr*6pcs", price: 447.68, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 187, name: "Club Cola -250ml*16pcs", price: 452.64, category: "juices", image: "clubcola.jpg" },
+            { id: 188, name: "Club Cola -500ml*12pcs", price: 608.93, category: "juices", image: "clubcola.jpg" },
+            { id: 189, name: "Club Cola -2250ml*6pcs", price: 1009.73, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 190, name: "Club Cola -1ltr*6pcs", price: 436.61, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 191, name: "Fancy -250ml*16pcs", price: 589.08, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 192, name: "Fancy -500ml*12Pcs", price: 745.37, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 193, name: "Fancy -2250ml*6pcs", price: 1136.43, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 194, name: "Fancy -1ltr*6pcs", price: 573.05, category: "juices", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 195, name: "Naturals Mango 200ml*24pcs", price: 498.26, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 196, name: "Naturals Mango 500ml*12pcs", price: 567.9, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" },
+            { id: 197, name: "Naturals Mango 1ltr*6pcs", price: 555.87, category: "juices", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" }
+        ];
+
+        let cart = [];
+
+        function displayProducts(filteredProducts = products) {
+            const categories = ['chocolates', 'kurkure_snacks', 'biscuits', 'tea', 'juices', 'soap_detergent', 'oils', 'tobacco', 'noodles', 'more_items'];
+            categories.forEach(category => {
+                const productList = document.getElementById(`${category}-list`);
+                const categoryProducts = filteredProducts.filter(product => product.category === category);
+                productList.innerHTML = categoryProducts.length > 0 ? categoryProducts.map(product => `
+                    <div class="product-card">
+                        <img src="${product.image}" alt="${product.name}">
+                        <div class="content p-4">
+                            <h3 class="text-lg font-semibold text-gray-800">${product.name}</h3>
+                            <p class="text-gray-600 font-bold">$${product.price.toFixed(2)}</p>
+                            <div class="flex justify-between mt-4">
+                                <button onclick="addToCart(${product.id})" class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') : `<p class="text-center text-gray-600 col-span-full">No products found in this category.</p>`;
+            });
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const cartItem = cart.find(item => item.id === productId);
+            if (cartItem) {
+                cartItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const mobileCartCount = document.getElementById('mobile-cart-count');
+            const cartTotal = document.getElementById('cart-total');
+            cartItems.innerHTML = cart.map(item => `
+                <div class="flex justify-between items-center border-b pb-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">${item.name}</p>
+                        <p class="text-gray-600">$${item.price.toFixed(2)} x ${item.quantity}</p>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-orange-600 hover:text-orange-800"><i class="fas fa-trash"></i></button>
+                </div>
+            `).join('');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            mobileCartCount.textContent = totalItems;
+            cartTotal.textContent = cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cart-sidebar');
+            cartSidebar.classList.toggle('translate-x-full');
+        }
+
+        function toggleMobileMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileNav = document.getElementById('mobile-nav');
+            hamburger.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+        }
+
+        // Video Slider
+        const slides = document.querySelectorAll('.video-slide');
+        const navDots = document.querySelectorAll('.slider-nav div');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+                navDots[i].classList.toggle('active', i === index);
+            });
+        }
+
+        navDots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                currentSlide = i;
+                showSlide(currentSlide);
+            });
+        });
+
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }, 5000);
+
+        // Initialize
+        displayProducts();
+    </script>
+</body>
+</html>
